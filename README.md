@@ -1,5 +1,7 @@
 # LP-Solver
 
+(*This project has been partially developed on a discord live stream.*)
+
 If you have a linear (programming) problem then you should have a system of inequalities in the following form:
 
 - Objective function to be minimized/maximized:
@@ -17,6 +19,8 @@ If you have a linear (programming) problem then you should have a system of ineq
   . <= .
 
   . <= .
+
+If you want to solve such problem then you may use different techniques which leads to the same solution sooner or later. This program uses the Simplex method created by George Dantzig. To deal with artificial variables (if any), it applies the 2-phase method to the problem.
 
 ## How to use
 

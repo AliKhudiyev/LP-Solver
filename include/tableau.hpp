@@ -18,6 +18,7 @@ namespace lp{ namespace utils{
 	m_data = (double**)malloc(n_row*sizeof(double*));
 	for(size_t i=0; i<n_row; ++i){
 	  m_data[i] = new double[n_col];
+	  for(size_t j=0; j<n_col; ++j) m_data[i][j] = 0.;
 	}
 	
       }
@@ -61,7 +62,7 @@ namespace lp{ namespace utils{
 
 	if(from_row){
 	  dx = 0;
-	  count = m_columnCount;
+	  count = m_columnCount-1;
 	  sign = 1;
 	}
 
@@ -76,8 +77,8 @@ namespace lp{ namespace utils{
 	    current = m_data[i][m_columnCount-1] / current;
 	  }
 	  if(current <= 0) continue;
-	  // printf("\t[%d]current: %lf => %lf vs %lf\n", from_row, current, sign*current, sign*recent);
-	  if(sign * current >= sign * recent){
+	  // printf("\t[%d]current: %lf | %lf >= %lf\n", from_row, current, sign*current, sign*recent);
+	  if(sign * current >= sign * recent || recent <= 0){
 	    recent = current;
 	    final_index = i;
           }
