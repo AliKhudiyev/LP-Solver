@@ -34,6 +34,7 @@ namespace lp{
 
     std::vector<size_t> m_artificialVariables;
     std::vector<double> m_transforms;
+    std::vector<std::vector<size_t>> m_constraintIndices; // To hold indices of the originally given constraints
     
   public:
     Solver() = default;
@@ -53,7 +54,12 @@ namespace lp{
     }
     void set_objective(const std::vector<double>& coefficients, bool goal){
       m_objective = coefficients;
-      m_goal = goal;
+      if(goal == LP_MINIMIZE){
+	for(auto& coef: m_objective){
+	  coef *= -1.0;
+	}
+      }
+      m_goal = LP_MAXIMIZE; // To be removed
     }
     void set_objective(const std::initializer_list<double>& coefficients, bool goal){
       std::vector<double> coefs;
@@ -145,7 +151,7 @@ namespace lp{
 	artificial_objective.push_back(0.0);
       
       for(size_t i=0; i<m_artificialVariables.size(); ++i){
-	tableau.at(m_artificialVariables[i], m_variables.size()+m_artificialVariables[i]) = -1.0;
+	tableau.at(m_artificialVariables[i], m_variables.size()+m_artificialVariables[i]-1) = -1.0;
 	tableau.mult(-1.0, m_artificialVariables[i]);
 	
 	for(size_t j=0; j<m_constraints[m_artificialVariables[i]].size(); ++j){
@@ -166,7 +172,7 @@ namespace lp{
       }
       tableau.at(m_constraints.size()+1, tableau.width()-1) = artificial_objective.back();
       /* --- */
-
+      
       size_t n_phase = m_artificialVariables.size()? 2 : 1;
       size_t offset = n_phase == 1? 0 : 1;
       for(size_t phase=0; phase<n_phase; ++phase, offset=0){
